@@ -9,7 +9,7 @@ var h = 5;
 
 function preload() {
   myImage = loadImage("./assets/gengar.gif")
-  mySong = loadSound("./assets/zombie.mp3");
+  mySong = loadSound("./assets/rusty.mp3");
 }
 
 function setup() {
