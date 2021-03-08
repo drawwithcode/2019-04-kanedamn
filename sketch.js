@@ -1,14 +1,9 @@
-var myImage;
-
 var mySong;
-var analyzer;
 
-var allLines = [];
-var startLines = 500;
-var h = 5;
+var fft;
+var w;
 
 function preload() {
-  myImage = loadImage("./assets/gengar.gif")
   mySong = loadSound("./assets/rusty.mp3");
 }
 
@@ -16,69 +11,45 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   background(0);
 
-  analyzer = new p5.Amplitude();
-  analyzer.setInput(mySong);
+  mySong.play();
 
-  for (var x = startLines; x < windowWidth - startLines; x += 10) {
-    var tempx = x;
-    var tempy1 = height / 2;
-    var tempy2 = height / 2 + h;
-
-    var tempLine = new Line(tempx, tempy1, tempx, tempy2);
-
-    allLines.push(tempLine);
-  }
+  fft = new p5.FFT(0.9, 32);
+  w = (width/2) / 100;
 }
 
 function draw() {
 
   background(0);
 
-  imageMode(CENTER);
-  image(myImage, width / 2, height / 2 + 200, myImage.width / 4, myImage.height / 4);
+//--------------------GENGAR----------------------------------------
+  //imageMode(CENTER);
+  //image(myImage, width / 2, height / 2 + 200, myImage.width / 4, myImage.height / 4);
 
-  if (mouseIsPressed) {
-    if (mySong.isPlaying() == false) {
-      mySong.play();
-    } else {
-      mySong.stop();
-    }
+//---------------------VISUALIZER-----------------------------------
+  var spectrum = fft.analyze();
+  strokeWeight(2);
+  stroke(255, 30, 121);
+  for (var i =0; i < spectrum.length; i++){
+    var amp = spectrum[i];
+    var y = map(amp, 0, 500, 300, 0);
+    line((width/2) + i * w, y, (width/2) + i * w, height/2);
   }
 
-  var volume = 0;
-  volume = analyzer.getLevel();
-  volume = map(volume, 0, 1, height / 2, -5);
-
-  for (var i = 0; i < allLines.length; i++) {
-    var tempLine = allLines[i];
-
-    tempLine.y2 = volume;
-
-    tempLine.display();
+  strokeWeight(2);
+  stroke(255, 30, 121);
+  for (var i = 0; i < spectrum.length; i++){
+    var amp = spectrum[i];
+    var y = map(amp, 0, 550, 350, 0);
+    line((width/2) - i * w, y, (width/2) - i * w, height/2);
   }
 
+//-----------------------TEXT----------------------------------------
   var myText = "Are you afraid of ghosts?";
 
   textFont('VT323');
   drawingContext.font = "34px VT323";
-  drawingContext.textAlign = "left";
+  drawingContext.textAlign = "center";
   fill(255);
-  text(myText, startLines, height / 2 + 30);
+  text(myText, width/2, height / 2 + 40);
 
-}
-
-function Line(_x1, _y1, _x2, _y2) {
-  this.x1 = _x1;
-  this.y1 = _y1;
-  this.x2 = _x2;
-  this.y2 = _y2;
-  this.color = stroke(255, 30, 121);
-
-  this.display = function() {
-    // var volume = 0;
-    // volume = analyzer.getLevel();
-    // volume = map(volume, 0, 1, 0, height);
-    // h = volume;
-    line(this.x1, this.y1, this.x2, this.y2);
-  }
 }
