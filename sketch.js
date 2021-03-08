@@ -11,8 +11,6 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   background(0);
 
-  mySong.play();
-
   fft = new p5.FFT(0.9, 32);
   w = (width/2) / 100;
 }
@@ -20,6 +18,15 @@ function setup() {
 function draw() {
 
   background(0);
+
+  if (mouseIsPressed) {
+    if(mySong.isPlaying()){
+       mySong.stop();
+     }
+     else{
+       mySong.play();
+     }
+   }
 
 //--------------------GENGAR----------------------------------------
   //imageMode(CENTER);
